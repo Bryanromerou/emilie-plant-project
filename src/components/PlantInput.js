@@ -10,12 +10,31 @@ class PlantInput extends Component {
           suggestedPlants: []
         };
     }
+    updateSuggestedPlants = (data)=>{
+        console.log(data);
+        const allPlants = data.map((plant)=>{
+            return <option>{plant.common_name}</option>;
+        });
+        console.log(allPlants)
+        this.setState({suggestedPlants:allPlants})
+    }
     componentDidUpdate(prevProps, prevState) {
         console.log("Component Update")
-        axios.get(`https://cors-anywhere.herokuapp.com/https://trefle.io/api/v1/plants/search?q=${this.state.inputVal}&token=VCRNIazx57aRMI9uKWJ7MafD-aurOIQdLtK4IuWroJI`)
+    }
+    componentDidMount() {
+        console.log("Component Mounted")
+ 
+    }
+    inputChange = (event) => {
+        this.setState({ inputVal: event.target.value })
+        axios.get(`https://cors-anywhere.herokuapp.com/https://trefle.io/api/v1/plants/search?q=${event.target.value}&token=VCRNIazx57aRMI9uKWJ7MafD-aurOIQdLtK4IuWroJI&filter_not[common_name]=null`,{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+            }})
         .then((response)=>{
             // handle success
-            console.log(response);
+            // console.log(response.data.data);
+            this.updateSuggestedPlants(response.data.data);
             // this.makeLogs(response.data.features)
             // console.log(this.state)
 
@@ -25,27 +44,12 @@ class PlantInput extends Component {
             console.log(error);
         })
     }
-    componentDidMount() {
-        console.log("Component Mounted")
-        // axios.get(`https://cors-anywhere.herokuapp.com/https://trefle.io/api/v1/plants/search?q=${this.state.inputVal}&ttoken=VCRNIazx57aRMI9uKWJ7MafD-aurOIQdLtK4IuWroJI`)
-        // .then((response)=>{
-        //     // handle success
-        //     console.log(response);
-        //     // this.makeLogs(response.data.features)
-        //     // console.log(this.state)
-
-        // })
-        // .catch(function (error) {
-        //     // handle error
-        //     console.log(error);
-        // })
-    }
     
     render() {
         return (
         <form className="form">
             <input 
-            onChange={(event) => this.setState({ inputVal: event.target.value })}
+            onChange={this.inputChange}
             className="form_input" 
             type="text" 
             placeholder="Enter Plant Name"
@@ -57,6 +61,10 @@ class PlantInput extends Component {
             type="submit" 
             value="Add Plant" 
             />
+            <select className="selectpicker" searchable="Search here..">
+                {this.state.suggestedPlants}
+            </select>
+
         </form>
         );
     }
