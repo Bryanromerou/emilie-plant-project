@@ -11,11 +11,11 @@ class PlantInput extends Component {
         };
     }
     updateSuggestedPlants = (data)=>{
-        console.log(data);
+        // console.log(data);
         const allPlants = data.map((plant)=>{
             return <option>{plant.common_name}</option>;
         });
-        console.log(allPlants)
+        // console.log(allPlants)
         this.setState({suggestedPlants:allPlants})
     }
     componentDidUpdate(prevProps, prevState) {
@@ -33,7 +33,7 @@ class PlantInput extends Component {
             }})
         .then((response)=>{
             // handle success
-            // console.log(response.data.data);
+            console.log(response.data.data);
             this.updateSuggestedPlants(response.data.data);
             // this.makeLogs(response.data.features)
             // console.log(this.state)
